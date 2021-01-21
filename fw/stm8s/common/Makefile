@@ -1,6 +1,6 @@
 DEVICE        = stm8s103f3
 F_CPU        ?= 16000000
-OLED         ?= SH1106_128_64
+OLED         ?= SSD1306_128_64
 FONTSET_MINI ?= FONTSET_MINI
 
 SRCDIR = ./src

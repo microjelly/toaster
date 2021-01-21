@@ -1,6 +1,8 @@
 /*
  * STM8S-TOASTER
  *
+ * STM8S-TOASTER
+ *
  * LED
  *  LED0 -> PB5 (RED; HOT)
  * SSR
@@ -10,7 +12,7 @@
  *  SW0  -> PB4
  * OLED
  *  CS   -> PC4
- *  DC   -> PD6
+ *  DC   -> PD2
  *  RES  -> PC3
  *  SCK  -> PC5 [spi]
  *  MOSI -> PC6 [spi]
@@ -22,7 +24,9 @@
  *  BEEP -> PD4
  * UART1
  *  TX   -> PD5
+ *  RX   -> PD6
  */
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stm8s.h>
@@ -30,7 +34,7 @@
 #include <format.h>
 #include <uart_stdout.h>
 #include <uart.h>
-#include <oled.h>
+#include <lcd12864.h>
 #include <max6675.h>
 #include <beep.h>
 
@@ -64,10 +68,10 @@ void setOutput(uint8_t value0, uint8_t value1)
     }
 }
 
-void setText(bool stdout, bool isTitle, struct SEGMENT *segment, uint8_t *format, ...)
+void setText(bool stdout, bool isTitle, struct LCD12864_SEGMENT *segment, uint8_t *format, ...)
 {
     uint8_t *ptr = segment->buffer;
-    oled_clear_segment(segment);
+    lcd12864_clear_segment(segment);
 
     if (isTitle)
     {
@@ -183,16 +187,16 @@ int main(void)
     rim();
     putstring("\r\n\r\n");
 
-    if (!oled_init(SSD1306_SWITCHCAPVCC, true))
+    if (!lcd12864_init(true))
     {
-        putstring("OLED FAIL\r\n");
+        putstring("LCD FAIL\r\n");
         while (1)
             ;
     }
-    struct SEGMENT *oledTitle = oled_new_segment(0, 1, 1, 1, 1, '#');
-    struct SEGMENT *oledTime = oled_new_segment(1, 2, 2, 1, 1, ' ');
-    struct SEGMENT *oledPowerTemp = oled_new_segment(3, 2, 3, 1, 1, ' ');
-    struct SEGMENT *oledStatus = oled_new_segment(6, 1, 2, 1, 1, '#');
+    struct LCD12864_SEGMENT *lcdTitle = lcd12864_new_segment(0, 1, 1, 1, 1, '#');
+    struct LCD12864_SEGMENT *lcdTime = lcd12864_new_segment(1, 2, 2, 1, 1, ' ');
+    struct LCD12864_SEGMENT *lcdPowerTemp = lcd12864_new_segment(3, 2, 3, 1, 1, ' ');
+    struct LCD12864_SEGMENT *lcdStatus = lcd12864_new_segment(6, 1, 2, 1, 1, '#');
 
     do
     {
@@ -244,14 +248,14 @@ int main(void)
         }
         else if (currentTemperature > DEFAULT_TEMP_HOT && stateMachine < SM_GO_RUN)
         {
-            setText(true, false, oledStatus, "%s %uC", ST_START_HOT, currentTemperature);
+            setText(true, false, lcdStatus, "%s %uC", ST_START_HOT, currentTemperature);
             beeps += 2;
             stateMachine = SM_START_COOLING;
         }
 
         if (currentTemperature == 0 && stateMachine > SM_GO_NULL)
         {
-            setText(true, false, oledStatus, "%s", ST_THERMOCOUPLE_ERROR);
+            setText(true, false, lcdStatus, "%s", ST_THERMOCOUPLE_ERROR);
             beeps += 4;
             stateMachine = SM_START_COOLING;
         }
@@ -266,7 +270,7 @@ int main(void)
 
         if (currentTemperature > DEFAULT_MAX_TEMP && stateMachine < SM_START_COOLING)
         {
-            setText(true, false, oledStatus, "%s", ST_OVERTEMP);
+            setText(true, false, lcdStatus, "%s", ST_OVERTEMP);
             beeps += 4;
             stateMachine = SM_START_COOLING;
         }
@@ -274,8 +278,8 @@ int main(void)
         switch (stateMachine)
         {
         case SM_GO_NULL:
-            setText(true, true, oledTitle, " %s %s", ST_TITLE, ST_VER);
-            setText(true, false, oledStatus, "%s", ST_PRESS_BUTTON_TO_START);
+            setText(true, true, lcdTitle, " %s %s", ST_TITLE, ST_VER);
+            setText(true, false, lcdStatus, "%s", ST_PRESS_BUTTON_TO_START);
             isHeating = false;
             profileStep = 0;
             displayTime = DISPLAY_CURRENT_SECOND;
@@ -287,8 +291,8 @@ int main(void)
             break;
 
         case SM_GO_RUN:
-            setText(true, true, oledTitle, " %s", ST_RUN);
-            oled_clear_segment(oledStatus);
+            setText(true, true, lcdTitle, " %s", ST_RUN);
+            lcd12864_clear_segment(lcdStatus);
             profileTimer = 0;
             profileTimerRunning = false;
             desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_ADJUST;
@@ -319,7 +323,7 @@ int main(void)
             break;
 
         case SM_START_COOLING:
-            setText(true, true, oledTitle, " %s", ST_COOLING);
+            setText(true, true, lcdTitle, " %s", ST_COOLING);
             isHeating = false;
             profileTimerRunning = true;
             profileTimer = 0;
@@ -339,8 +343,8 @@ int main(void)
             break;
 
         case SM_DONE:
-            setText(true, true, oledTitle, " %s", ST_DONE);
-            setText(true, false, oledStatus, "%s", ST_PRESS_TO_RESTART);
+            setText(true, true, lcdTitle, " %s", ST_DONE);
+            setText(true, false, lcdStatus, "%s", ST_PRESS_TO_RESTART);
             isHeating = false;
             beeps += 10;
             stateMachine = SM_DONE_Q;
@@ -372,8 +376,8 @@ int main(void)
 
         if (isOneSecondInterval)
         {
-            oled_clear_segment(oledTime);
-            oled_clear_segment(oledPowerTemp);
+            lcd12864_clear_segment(lcdTime);
+            lcd12864_clear_segment(lcdPowerTemp);
 
             if (stateMachine == SM_DONE_Q)
             { /*
@@ -391,16 +395,16 @@ int main(void)
                 uint16_t tm = (lm % 60);
                 uint8_t th = (lm / 60);
                 uint8_t ts = (dT % 60);
-                format_sprintf(oledTime->buffer, "%c  %02u:%02u:%02u", (uint8_t)displayType, th, tm, ts);
-                format_sprintf(oledPowerTemp->buffer, "--:-- %3u C", currentTemperature);
+                format_sprintf(lcdTime->buffer, "%c  %02u:%02u:%02u", (uint8_t)displayType, th, tm, ts);
+                format_sprintf(lcdPowerTemp->buffer, "--:-- %3u C", currentTemperature);
                 if (isHeating)
-                    format_sprintf(oledPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_BOTTOM], currentDutyCycle[ELEMENT_TOP]);
+                    format_sprintf(lcdPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_BOTTOM], currentDutyCycle[ELEMENT_TOP]);
             }
 
-            oled_display_segment(oledTitle);
-            oled_display_segment(oledTime);
-            oled_display_segment(oledPowerTemp);
-            oled_display_segment(oledStatus);
+            lcd12864_display_segment(lcdTitle);
+            lcd12864_display_segment(lcdTime);
+            lcd12864_display_segment(lcdPowerTemp);
+            lcd12864_display_segment(lcdStatus);
         }
 
         wfi();
