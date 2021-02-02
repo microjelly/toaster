@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+FOLDER=ebake1
+CORE=stm8s
+
+make -C ${DAPPER_SOURCE}/fw/${CORE}/${FOLDER}
+cp ${DAPPER_SOURCE}/fw/${CORE}/${FOLDER}/${FOLDER}.ihx ${DAPPER_OUTPUT}/${CORE}-${FOLDER}.ihx
+ls -al ${DAPPER_OUTPUT}/${CORE}-${FOLDER}.ihx

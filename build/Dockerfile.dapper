@@ -1,0 +1,11 @@
+FROM ubuntu:20.10
+RUN apt-get update \
+  && apt-get install -y vim make sdcc \
+  && apt-get autoclean
+
+ENV DAPPER_SOURCE /source
+ENV DAPPER_OUTPUT ./build/bin
+WORKDIR ${DAPPER_SOURCE}
+
+ENTRYPOINT ["./build/scripts/entry"]
+CMD ["all"]
