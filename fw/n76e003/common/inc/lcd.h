@@ -49,23 +49,11 @@ typedef struct LCD_SEGMENT
     uint8_t fontSpacing;
     uint8_t page0;
     uint8_t rows;
-
-/*
-    uint8_t cols;
-    uint8_t width;
-    uint8_t height;
-*/
 };
 
 bool lcd_init(bool reset);
 bool lcd_clear_segment(struct LCD_SEGMENT *segment);
 bool lcd_display_segment(struct LCD_SEGMENT *segment);
-
-/*
-void lcd12864_invert_display(bool i);
-void lcd12864_clear_display(bool i);
-bool lcd12864_display_segment(struct LCD12864_SEGMENT *segment);
-*/
 
 void lcd_command1(uint8_t c);
 void lcd_command_list(const uint8_t *c, uint8_t n);

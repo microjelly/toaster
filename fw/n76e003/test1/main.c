@@ -240,7 +240,7 @@ void main(void)
 	set_EA;
 
 	printf_tiny("\r\nTEST1\r\n");
-	setOutput(24, 49);
+	setOutput(99, 99);
 
 	do
 	{

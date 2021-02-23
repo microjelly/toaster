@@ -175,7 +175,7 @@ void main(void)
 
     __xdata pid_struct pid = {
         0, 0,   //dstate, istate
-        10, 0,  //imax, imin
+        10, 0,  //imax, imin  
         99, 0,  //max/min output limits
         PID_P, PID_I, PID_D //p, i, d gains
     };
@@ -394,7 +394,7 @@ void main(void)
             lcd_clear_segment(&lcdStatus);
             profileTimer = 0;
             profileTimerRunning = false;
-            desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_ADJUST;
+            desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_OVERSHOOT;
             displayTime = DISPLAY_PROFILE_TIMER;
             beeps += 1;
             isHeating = true;
@@ -408,6 +408,7 @@ void main(void)
 
             if ((profileTimerRunning == false) && (profile[profileStep][PROFILE_TEMP] - PROFILE_ADJUST <= currentTemperature))
             {
+	            desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_ADJUST;
                 profileTimer = 0;
                 profileTimerRunning = true;
             }
@@ -459,8 +460,8 @@ void main(void)
             {
                 previousPidDutyCycle = currentPidDutyCycle;
                 setOutput(currentPidDutyCycle, currentPidDutyCycle);
-                currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle;
-                currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle;
+                currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle * BIAS_T / BIAS_MAX;
+                currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle * BIAS_B / BIAS_MAX;
             }
         }
         else

@@ -5,15 +5,15 @@ bool lcd_init(bool reset)
 {
     /* Initialize CS pin HIGH */
     P11_PushPull_Mode;
-	set_P11;
+    set_P11;
 
     /* Initialize RES pin HIGH */
     P17_PushPull_Mode;
-	set_P17;
+    set_P17;
 
     /* Initialize DC pin LOW */
     P03_PushPull_Mode;
-	clr_P03;
+    clr_P03;
 
     /* Initialize spi */
     spi_init();
@@ -49,7 +49,7 @@ bool lcd_init(bool reset)
     lcd_command1(0x81); // Set Contrast
     lcd_command1(21);
     lcd_command1(0x40); // DisplayLine=0
-    lcd_clear(0x00); //was 00
+    lcd_clear(0x00);    //was 00
     lcd_command1(0xAF); // Display ON
 
     return true;
@@ -79,8 +79,8 @@ void lcd_clear(uint8_t d)
         uint8_t dlist1[] = {
             0x40 | LCD_PIX_START,
             0xB0 | page,
-            (0x10 | (0 >> 4)),
-            (0x0f & 0) | 0x04};
+            0x10,
+            (0x0f & 0x00)}; // 0x04 is offset foir normal; 0x00 for upsidedown
         lcd_command_list(dlist1, sizeof(dlist1));
         LCD_TRANSACTION_START
         LCD_MODE_DATA
@@ -99,7 +99,7 @@ bool lcd_clear_segment(struct LCD_SEGMENT *segment)
 __xdata uint8_t spiBuffer[128];
 bool lcd_display_segment(struct LCD_SEGMENT *segment)
 {
-    uint8_t *sBuffer = (uint8_t*)segment->buffer;
+    uint8_t *sBuffer = (uint8_t *)segment->buffer;
     uint8_t cols = segment->bufferDepth / segment->rows;
     uint8_t spiIdx, rb_now, rbit, rpix2, glyph = 0x00;
     uint16_t glyphP = 0x00;
@@ -114,10 +114,10 @@ bool lcd_display_segment(struct LCD_SEGMENT *segment)
             uint8_t dlist1[] = {
                 0x40 | LCD_PIX_START,
                 0xB0 | (segment->page0 + row + fH_now),
-                (0x10 | (0 >> 4)),
-                (0x0f & 0) | 0x04};
+                0x10,
+                (0x0f & 0x00)}; // 0x04 is offset foir normal; 0x00 for upsidedown
             lcd_command_list(dlist1, sizeof(dlist1));
- 
+
             spiIdx = 0;
             rb_now = _FONT_H * fH_now;
             for (uint8_t col = 0; col < cols; col++)
