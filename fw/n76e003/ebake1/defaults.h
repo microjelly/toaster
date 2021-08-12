@@ -63,7 +63,7 @@ enum
 
 #define BIAS_MAX 100
 #define BIAS_B 100
-#define BIAS_T 80
+#define BIAS_T 95
 
 const uint8_t profile[3][2] = {{150,40},{190,10},{245,12}};
 #define PROFILE_LEN 3
