@@ -34,7 +34,7 @@ U1 | STM8S103F3P6
 Reference | Value
 -- | --
 C5 | DNP (Do Not Populate)
-R5 | 0 Ohms
+R5 | 0 Ohm
 U1 | N76E003AT20
 
 ### Programing/Debug Header
