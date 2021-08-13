@@ -1,6 +1,6 @@
 # toaster
 
-A barebones toaster reflow board and software. For details please visit my [blog](http://microjelly.com/tags/reflow/)
+A barebones toaster reflow board and software. For details please visit my [project log](https://microjelly.com/reflow-controller-replacement/)
 
 ## Software
 

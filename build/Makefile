@@ -1,22 +1,25 @@
-TARGETS := $(shell ls scripts)
+SDCC_TARGETS := $(shell find scripts/sdcc -type f|cut -c9-)
 
-.dapper:
+$(PWD)/bin:
+	@mkdir -p $(PWD)/bin
+
+$(PWD)/bin/.dapper: $(PWD)/bin
 	@echo Downloading dapper
-	@curl -sL https://releases.rancher.com/dapper/v0.5.4/dapper-`uname -s`-`uname -m` > .dapper.tmp
-	@@chmod +x .dapper.tmp
-	@./.dapper.tmp -v
-	@mv .dapper.tmp .dapper
+	@curl -sL https://releases.rancher.com/dapper/v0.5.4/dapper-`uname -s`-`uname -m` > $(PWD)/bin/.dapper.tmp
+	@@chmod +x $(PWD)/bin/.dapper.tmp
+	@$(PWD)/bin/.dapper.tmp -v
+	@mv $(PWD)/bin/.dapper.tmp $(PWD)/bin/.dapper
 
-$(TARGETS): .dapper
-	cd ../ && $(PWD)/.dapper -f build/Dockerfile.dapper $@
-	@yes | docker image prune > /dev/null
+$(SDCC_TARGETS): $(PWD)/bin/.dapper
+	@echo "Building $@"
+	cd ../ && DOCKER_BUILDKIT=1 $(PWD)/bin/.dapper --target sdcc -f build/Dockerfile.dapper build/scripts/$@
 
-.PHONY: all
-.DEFAULT_GOAL := all
+.PHONY: help
+.DEFAULT_GOAL := help
+
+help:
+	@$(PWD)/scripts/help.sh
 
 clean:
-	@rm -rf $(PWD)/bin $(PWD)/.dapper $(PWD)/Dockerfile.dapper[0-9]*
+	@rm -rf $(PWD)/bin $(PWD)/Dockerfile.dapper[0-9]*
 	@docker rmi toaster:master
-
-shell-bind: .dapper
-	cd ../ && $(PWD)/.dapper -f build/Dockerfile.dapper -m bind -s
