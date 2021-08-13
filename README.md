@@ -13,7 +13,7 @@ cd toaster/build
 make sdcc/stm8s-ebake1.ihx
 make sdcc/n76e003-ebake1.ihx
 ```
-`stm8s-ebake1.ihx` adn `n76e003-ebake1.ihx` will be found in the `build/bin` directory. 
+`stm8s-ebake1.ihx` and `n76e003-ebake1.ihx` will be found in the `build/bin` directory. 
 
 ### Flash STM8s
 ```bash
