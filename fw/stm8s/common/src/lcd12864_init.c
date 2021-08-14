@@ -37,8 +37,8 @@ bool lcd12864_init(bool reset)
         delay_ms(10);
     }
 
-    lcd12864_command1(0xA1); // Reverse direction (SEG131-SEG0)
-    lcd12864_command1(0xC8); // SHL 1,COM63-COM0
+    //lcd12864_command1(0xA1); // Reverse direction (SEG131-SEG0)
+    //lcd12864_command1(0xC8); // SHL 1,COM63-COM0
     lcd12864_command1(0xA2); // Clear Bias: bias 0
 
     // Power_Control 4 (internal converter ON) + 2 (internal regulator ON) + 1 (internal follower ON)

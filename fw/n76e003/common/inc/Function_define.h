@@ -232,6 +232,7 @@ All function define inital setting file for Nuvoton N76E003
 		#define TIMER_DIV64_VALUE_30ms			65536-7500	//7500*64/16000000 = 30 ms			// Timer divider = 64
 		#define	TIMER_DIV128_VALUE_100ms		65536-12500	//12500*128/16000000 = 100 ms		// Timer divider = 128
 		#define	TIMER_DIV128_VALUE_200ms		65536-25000	//25000*128/16000000 = 200 ms		// Timer divider = 128
+		#define	TIMER_DIV128_VALUE_250ms		65536-31250	//31250*128/16000000 = 250 ms		// Timer divider = 128
 		#define TIMER_DIV256_VALUE_500ms		65536-31250	//31250*256/16000000 = 500 ms 	// Timer divider = 256
 		#define	TIMER_DIV512_VALUE_1s				65536-31250	//31250*512/16000000 = 1 s.  		// Timer Divider = 512
 #endif

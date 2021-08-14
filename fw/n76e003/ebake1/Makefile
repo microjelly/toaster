@@ -1,6 +1,3 @@
-DEVICE        = stm8s103f3
-F_CPU        ?= 16000000
-
 ## A directory for stm8s include file & lib
 COMMONDIR = ../common
 
@@ -12,14 +9,18 @@ OBJECTS=$(SOURCES:.c=.rel)
 HEADERS=$(wildcard *.h $(COMMONDIR)/inc/*.h)
 
 CC = sdcc
-PROGRAMMER = stlinkv2
+AS = sdas8051
+MCU_MODEL = mcs51
+MODEL  = small
+CODE_SIZE = --code-size 18432
+IRAM_SIZE = --iram-size 256
+XRAM_SIZE = --xram-size 768
+DFOSC = -DFOSC_160000
 
-DEFINES=
-DEFINES += -DSTM8S103
-
+AFLAGS =  -l -s 
 CPPFLAGS =  -I$(COMMONDIR)/inc
-CFLAGS = --Werror --std-sdcc99 -mstm8 --opt-code-size $(DEFINES) -DF_CPU=$(F_CPU)UL
-LDFLAGS = -lstm8 -mstm8 --out-fmt-ihx
+CFLAGS = -I$(INCDIR) -m$(MCU_MODEL) --model-$(MODEL) --out-fmt-ihx --no-xinit-opt  $(DFOSC)
+LFLAGS = $(LIBPATH) $(LIBS) -m$(MCU_MODEL) --model-$(MODEL) $(CODE_SIZE) $(IRAM_SIZE) $(XRAM_SIZE) --out-fmt-ihx $(DEBUG) $(DFOSC)
 LDLIBS = -L$(COMMONDIR) -lcommon.lib
 
 .PHONY: all clean flash
@@ -42,6 +43,3 @@ CCOMPILEDFILES=$(SOURCES:.c=.asm) $(SOURCES:.c=.lst) $(SOURCES:.c=.rel) \
                $(SOURCES:.c=.rst) $(SOURCES:.c=.sym)
 clean:
 	@rm -f $(PROGRAM).ihx $(PROGRAM).cdb $(PROGRAM).lk $(PROGRAM).map $(CCOMPILEDFILES)
-
-flash: $(PROGRAM).ihx
-	stm8flash -c $(PROGRAMMER) -p $(DEVICE) -w $(PROGRAM).ihx

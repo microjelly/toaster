@@ -1,8 +1,0 @@
-#!/bin/bash
-set -e
-
-FOLDER=test1
-
-make -C ${DAPPER_SOURCE}/fw/stm8s/${FOLDER}
-cp ${DAPPER_SOURCE}/fw/stm8s/${FOLDER}/${FOLDER}.ihx ${DAPPER_OUTPUT}/stm8s-${FOLDER}.ihx
-ls -al ${DAPPER_OUTPUT}/stm8s-${FOLDER}.ihx

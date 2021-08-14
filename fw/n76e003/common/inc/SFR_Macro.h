@@ -543,6 +543,8 @@
 //**** P2S		B5H	****
 #define set_P2S_0   P2S     |= SET_BIT0
 #define clr_P2S_0   P2S     &= ~SET_BIT0
+#define set_T0OE    P2S     |= SET_BIT2
+#define clr_T0OE    P2S     &= ~SET_BIT2
 
 //**** IPH    B7H PAGE0 ****                    
 #define set_PADCH   IPH		|= SET_BIT6

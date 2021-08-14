@@ -1,8 +1,6 @@
 /*
  * STM8S-TOASTER
  *
- * STM8S-TOASTER
- *
  * LED
  *  LED0 -> PB5 (RED; HOT)
  * SSR
