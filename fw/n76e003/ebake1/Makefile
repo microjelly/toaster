@@ -1,4 +1,4 @@
-## A directory for stm8s include file & lib
+## A directory for n76e003 include file & lib
 COMMONDIR = ../common
 
 ## Get program name from enclosing directory name
@@ -23,6 +23,8 @@ CFLAGS = -I$(INCDIR) -m$(MCU_MODEL) --model-$(MODEL) --out-fmt-ihx --no-xinit-op
 LFLAGS = $(LIBPATH) $(LIBS) -m$(MCU_MODEL) --model-$(MODEL) $(CODE_SIZE) $(IRAM_SIZE) $(XRAM_SIZE) --out-fmt-ihx $(DEBUG) $(DFOSC)
 LDLIBS = -L$(COMMONDIR) -lcommon.lib
 
+FLASHTOOL=nuvoprog
+
 .PHONY: all clean flash
 
 all: $(PROGRAM).ihx
@@ -41,5 +43,9 @@ $(COMMONDIR)/common.lib:
 
 CCOMPILEDFILES=$(SOURCES:.c=.asm) $(SOURCES:.c=.lst) $(SOURCES:.c=.rel) \
                $(SOURCES:.c=.rst) $(SOURCES:.c=.sym)
+
+flash: $(PROGRAM).ihx
+	$(FLASHTOOL) -c $(PROGRAMMER) -p $(DEVICE) -w $(PROGRAM).ihx
+
 clean:
 	@rm -f $(PROGRAM).ihx $(PROGRAM).cdb $(PROGRAM).lk $(PROGRAM).map $(CCOMPILEDFILES)

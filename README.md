@@ -16,8 +16,15 @@ make sdcc/n76e003-ebake1.ihx
 `stm8s-ebake1.ihx` and `n76e003-ebake1.ihx` will be found in the `build/bin` directory. 
 
 ### Flash STM8s
+https://github.com/vdudouyt/stm8flash
 ```bash
 stm8flash -c stlinkv2 -p stm8s103?3 -w stm8s-ebake1.ihx
+```
+
+### Flash N76E003
+https://github.com/erincandescent/nuvoprog
+```bash
+nuvoprog -t n76e003 -c FFFFFFFF -a n76e003-bake1.ihx
 ```
 
 ## Hardware
@@ -59,3 +66,12 @@ Pad | STM8s | N76E003
 8 | NRST | RST
 9 | TX | TX
 10 | N/A | ICPDAT
+
+## Debug
+Connect RX/TX/GND to a serial device.
+\
+\
+OSX; (exit Ctrl+A; Ctrl+\\; Y)
+```bash
+screen -port /dev/tty.usbserial-0001 115200
+```

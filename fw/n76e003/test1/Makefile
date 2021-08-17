@@ -1,4 +1,4 @@
-## A directory for stm8s include file & lib
+## A directory for n76e003 include file & lib
 COMMONDIR = ../common
 
 ## Get program name from enclosing directory name

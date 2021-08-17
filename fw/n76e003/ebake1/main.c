@@ -22,7 +22,7 @@
  *  MISO -> P0.1;MISO  [spi]
  * BEEP
  *  BEEP -> P0.5;T0
- * UART1
+ * UART1    115200 8N1
  *  TX   -> P0.6
  *  RX   -> P0.7
  */
