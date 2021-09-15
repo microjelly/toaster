@@ -2,29 +2,29 @@
  * N76E003-TOASTER
  *
  * LED
- *  LED0 -> P1.4 (RED; HOT)
+ *  LED0 -> [11] P1.4 (RED; HOT)
  * SSR
- *  SSR0 -> P0.4;PWM3 > TOP
- *  SSR1 -> P1.5;PWM5 > BOTTOM
+ *  SSR0 -> [20] P0.4;PWM3 > TOP
+ *  SSR1 -> [10] P1.5;PWM5 > BOTTOM
  * SERVO
- *  SRV0 -> P1.2;PWM0
+ *  SRV0 -> [13] P1.2;PWM0
  * SW
- *  SW0  -> P1.3
+ *  SW0  -> [12] P1.3
  * LCD
- *  CS   -> P1.1
- *  DC   -> P0.3
- *  RES  -> P1.7
- *  SCK  -> P1.0;SPCLK [spi]
- *  MOSI -> P0.0;MOSI  [spi]
+ *  CS   -> [14] P1.1
+ *  DC   -> [19] P0.3
+ *  RES  -> [06] P1.7
+ *  SCK  -> [15] P1.0;SPCLK [spi]
+ *  MOSI -> [16] P0.0;MOSI  [spi]
  * MAX6675
- *  CS   -> P3.0
- *  SCK  -> P1.0;SPCLK [spi]
- *  MISO -> P0.1;MISO  [spi]
+ *  CS   -> [05] P3.0
+ *  SCK  -> [15] P1.0;SPCLK [spi]
+ *  MISO -> [17] P0.1;MISO  [spi]
  * BEEP
- *  BEEP -> P0.5;T0
+ *  BEEP -> [01] P0.5;T0
  * UART1    115200 8N1
- *  TX   -> P0.6
- *  RX   -> P0.7
+ *  TX   -> [02] P0.6
+ *  RX   -> [03] P0.7
  */
 
 #include <N76E003.h>

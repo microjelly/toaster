@@ -13,7 +13,7 @@
  * MOSI -> PC6 [spi]
  * MISO -> PC7 [spi]
  * CS   -> PC4
- * RES  -> PC3
+ * RES  -> PA2 //PC3
  * DC   -> PD2
  */
 

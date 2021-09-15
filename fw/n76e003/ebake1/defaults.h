@@ -57,8 +57,8 @@ enum
     PROFILE_LAST,
 };
 
-#define PID_P 5
-#define PID_I 2
+#define PID_P 2
+#define PID_I 3
 #define PID_D 0
 
 #define BIAS_MAX 100

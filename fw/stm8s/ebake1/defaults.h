@@ -55,10 +55,19 @@ enum
     PROFILE_LAST,
 };
 
+#define PID_P 2
+#define PID_I 3
+#define PID_D 0
+
+#define BIAS_MAX 100
+#define BIAS_B 100
+#define BIAS_T 95
+
 const uint8_t profile[3][2] = {{150,40},{190,10},{245,12}};
 #define PROFILE_LEN 3
 #define PROFILE_TEMP 0
 #define PROFILE_TIME 1
+#define PROFILE_OVERSHOOT 10 // FIX the PID, don't do this!!
 #define PROFILE_ADJUST 1
 
 #endif /* DEFAULTS_H */

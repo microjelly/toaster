@@ -1,6 +1,7 @@
 #include "max6675.h"
+#include "delay.h"
 #include "stm8s.h"
-#include "spi.h"
+//#include "spi.h"
 
 
 void max6675_init()
@@ -15,6 +16,5 @@ void max6675_init()
     PC_CR1 |= PIN5;
     PC_ODR |= PIN5; // CLK high
 
-    /* Initialize spi */
-    spi_init();
+    delay_ms(600); // gross startup delay
 }
