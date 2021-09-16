@@ -459,9 +459,9 @@ void main(void)
             if (previousPidDutyCycle != currentPidDutyCycle)
             {
                 previousPidDutyCycle = currentPidDutyCycle;
-                setOutput(currentPidDutyCycle, currentPidDutyCycle);
                 currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle * BIAS_T / BIAS_MAX;
                 currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle * BIAS_B / BIAS_MAX;
+                setOutput(currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM]);
             }
         }
         else
@@ -498,7 +498,7 @@ void main(void)
                 uint8_t ts = (dT % 60);
 				setText(false, false, &lcdTime,  "%c %02u:%02u:%02u", displayType, th, tm, ts);
 				if (isHeating)
-					setText(false, false, &lcdPowerTemp, "%02u:%02u %3u C", currentDutyCycle[ELEMENT_BOTTOM], currentDutyCycle[ELEMENT_TOP], currentTemperature);
+					setText(false, false, &lcdPowerTemp, "%02u:%02u %3u C", currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM], currentTemperature);
 				else
 					setText(false, false, &lcdPowerTemp, "--:-- %3u C", currentTemperature);
 				

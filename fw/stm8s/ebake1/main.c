@@ -363,9 +363,9 @@ int main(void)
             if (previousPidDutyCycle != currentPidDutyCycle)
             {
                 previousPidDutyCycle = currentPidDutyCycle;
-                setOutput(currentPidDutyCycle, currentPidDutyCycle);
                 currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle * BIAS_T / BIAS_MAX;
                 currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle * BIAS_B / BIAS_MAX;
+                setOutput(currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM]);
             }
         }
         else
@@ -402,7 +402,7 @@ int main(void)
                 format_sprintf(lcdTime->buffer, "%c  %02u:%02u:%02u", (uint8_t)displayType, th, tm, ts);
                 format_sprintf(lcdPowerTemp->buffer, "--:-- %3u C", currentTemperature);
                 if (isHeating)
-                    format_sprintf(lcdPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_BOTTOM], currentDutyCycle[ELEMENT_TOP]);
+                    format_sprintf(lcdPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM]);
             }
 
             lcd12864_display_segment(lcdTitle);
