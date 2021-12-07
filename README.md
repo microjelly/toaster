@@ -24,7 +24,7 @@ stm8flash -c stlinkv2 -p stm8s103?3 -w stm8s-ebake1.ihx
 ### Flash N76E003
 https://github.com/erincandescent/nuvoprog
 ```bash
-nuvoprog -t n76e003 -c FFFFFFFF -a n76e003-bake1.ihx
+nuvoprog program -t n76e003 -c FFFFFFFF -a n76e003-bake1.ihx
 ```
 
 ## Hardware
