@@ -14,9 +14,9 @@ bool lcd12864_init(bool reset)
     PC_ODR |= PIN4;
 
     /* Initialize RES pin HIGH */
-    PC_DDR |= PIN3;
-    PC_CR1 |= PIN3;
-    PC_ODR |= PIN3;
+    PA_DDR |= PIN2;
+    PA_CR1 |= PIN2;
+    PA_ODR |= PIN2;
 
     /* Initialize DC pin LOW */
     PD_DDR |= PIN2;
@@ -29,11 +29,11 @@ bool lcd12864_init(bool reset)
     if (reset)
     {
         lcd12864_command1(LCD12864_RESET); // Clear Bias: bias 0
-        PC_ODR |= PIN3;
+        PA_ODR |= PIN2;
         delay_ms(2);
-        PC_ODR &= ~PIN3;
+        PA_ODR &= ~PIN2;
         delay_ms(2);
-        PC_ODR |= PIN3;
+        PA_ODR |= PIN2;
         delay_ms(10);
     }
 

@@ -20,9 +20,6 @@
 #define DEFAULT_MAX_TEMP 280
 #define DEFAULT_MAX_DEVIATION 20
 
-#define DEFAULT_MAX_DUTY_TOP 75
-#define DEFAULT_MAX_DUTY_BOTTOM 100
-
 enum
 {
     SM_GO_NULL = 0,
@@ -55,10 +52,19 @@ enum
     PROFILE_LAST,
 };
 
+#define PID_P 2
+#define PID_I 3
+#define PID_D 0
+
+#define BIAS_MAX 100
+#define BIAS_T 75
+#define BIAS_B 100
+
 const uint8_t profile[3][2] = {{150,40},{190,10},{245,12}};
 #define PROFILE_LEN 3
 #define PROFILE_TEMP 0
 #define PROFILE_TIME 1
+#define PROFILE_OVERSHOOT 10 // FIX the PID, don't do this!!
 #define PROFILE_ADJUST 1
 
 #endif /* DEFAULTS_H */

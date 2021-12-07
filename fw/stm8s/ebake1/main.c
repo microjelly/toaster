@@ -2,27 +2,29 @@
  * STM8S-TOASTER
  *
  * LED
- *  LED0 -> PB5 (RED; HOT)
+ *  LED0 -> [11] PB5 (RED; HOT)
  * SSR
- *  SSR0 -> PD3 [tim2-ch2] > TOP
- *  SSR1 -> PA3 [tim2-ch3] > BOTTOM
+ *  SSR0 -> [20] PD3 [tim2-ch2] > TOP
+ *  SSR1 -> [10] PA3 [tim2-ch3] > BOTTOM
+* SERVO
+ *  SRV0 -> [13] ??
  * SW
- *  SW0  -> PB4
+ *  SW0  -> [12] PB4
  * OLED
- *  CS   -> PC4
- *  DC   -> PD2
- *  RES  -> PC3
- *  SCK  -> PC5 [spi]
- *  MOSI -> PC6 [spi]
+ *  CS   -> [14] PC4
+ *  DC   -> [19] PD2
+ *  RES  -> [06] PA2
+ *  SCK  -> [15] PC5 [spi]
+ *  MOSI -> [16] PC6 [spi]
  * MAX6675
- *  CS   -> PA1
- *  SCK  -> PC5 [spi]
- *  MISO -> PC7 [spi]
+ *  CS   -> [05] PA1
+ *  SCK  -> [15] PC5 [spi]
+ *  MISO -> [17] PC7 [spi]
  * BEEP
- *  BEEP -> PD4
- * UART1
- *  TX   -> PD5
- *  RX   -> PD6
+ *  BEEP -> [01] PD4
+ * UART1    115200 8N1
+ *  TX   -> [02] PD5
+ *  RX   -> [03] PD6
  */
 
 #include <stdint.h>
@@ -134,18 +136,16 @@ int main(void)
         0, 0,   //dstate, istate
         10, 0,  //imax, imin
         99, 0,  //max/min output limits
-        2, 3, 0 //1, 1, 0 //p, i, d gains
+        PID_P, PID_I, PID_D //p, i, d gains
     };
-
-    sim();
-    clock_init();
-    uart_init();
-    max6675_init();
-    beep_init();
 
     /* LED setup */
     PORT(LED0_PORT, DDR) |= LED0_PIN;
     PORT(LED0_PORT, CR1) |= LED0_PIN;
+    PORT(LED0_PORT, ODR) |= LED0_PIN;
+
+    sim();
+    clock_init();
 
     /* TIM1 setup ~250ms */
     tim1Value = 0;
@@ -183,11 +183,10 @@ int main(void)
     EXTI_CR1 |= 0x08;
 
     rim();
-    putstring("\r\n\r\n");
+
 
     if (!lcd12864_init(true))
     {
-        putstring("LCD FAIL\r\n");
         while (1)
             ;
     }
@@ -195,6 +194,12 @@ int main(void)
     struct LCD12864_SEGMENT *lcdTime = lcd12864_new_segment(1, 2, 2, 1, 1, ' ');
     struct LCD12864_SEGMENT *lcdPowerTemp = lcd12864_new_segment(3, 2, 3, 1, 1, ' ');
     struct LCD12864_SEGMENT *lcdStatus = lcd12864_new_segment(6, 1, 2, 1, 1, '#');
+
+    beep_init();
+    uart_init();
+    putstring("\r\n\r\n");
+
+    max6675_init();
 
     do
     {
@@ -293,7 +298,7 @@ int main(void)
             lcd12864_clear_segment(lcdStatus);
             profileTimer = 0;
             profileTimerRunning = false;
-            desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_ADJUST;
+            desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_OVERSHOOT;
             displayTime = DISPLAY_PROFILE_TIMER;
             beeps += 1;
             isHeating = true;
@@ -307,6 +312,7 @@ int main(void)
 
             if ((profileTimerRunning == false) && (profile[profileStep][PROFILE_TEMP] - PROFILE_ADJUST <= currentTemperature))
             {
+                desiredTemperature = profile[profileStep][PROFILE_TEMP] + PROFILE_ADJUST;
                 profileTimer = 0;
                 profileTimerRunning = true;
             }
@@ -344,7 +350,7 @@ int main(void)
             setText(true, true, lcdTitle, " %s", ST_DONE);
             setText(true, false, lcdStatus, "%s", ST_PRESS_TO_RESTART);
             isHeating = false;
-            beeps += 10;
+            beeps += 6;
             stateMachine = SM_DONE_Q;
 
         case SM_DONE_Q:
@@ -357,9 +363,9 @@ int main(void)
             if (previousPidDutyCycle != currentPidDutyCycle)
             {
                 previousPidDutyCycle = currentPidDutyCycle;
-                setOutput(currentPidDutyCycle, currentPidDutyCycle);
-                currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle;
-                currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle;
+                currentDutyCycle[ELEMENT_TOP] = currentPidDutyCycle * BIAS_T / BIAS_MAX;
+                currentDutyCycle[ELEMENT_BOTTOM] = currentPidDutyCycle * BIAS_B / BIAS_MAX;
+                setOutput(currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM]);
             }
         }
         else
@@ -396,7 +402,7 @@ int main(void)
                 format_sprintf(lcdTime->buffer, "%c  %02u:%02u:%02u", (uint8_t)displayType, th, tm, ts);
                 format_sprintf(lcdPowerTemp->buffer, "--:-- %3u C", currentTemperature);
                 if (isHeating)
-                    format_sprintf(lcdPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_BOTTOM], currentDutyCycle[ELEMENT_TOP]);
+                    format_sprintf(lcdPowerTemp->buffer, "%02u:%02u", currentDutyCycle[ELEMENT_TOP], currentDutyCycle[ELEMENT_BOTTOM]);
             }
 
             lcd12864_display_segment(lcdTitle);

@@ -115,7 +115,7 @@ bool lcd_display_segment(struct LCD_SEGMENT *segment)
                 0x40 | LCD_PIX_START,
                 0xB0 | (segment->page0 + row + fH_now),
                 0x10,
-                (0x0f & 0x00)}; // 0x04 is offset foir normal; 0x00 for upsidedown
+                (0x0f & 0x00)}; // |0x04 is offset for normal; 0x00 for upsidedown
             lcd_command_list(dlist1, sizeof(dlist1));
 
             spiIdx = 0;

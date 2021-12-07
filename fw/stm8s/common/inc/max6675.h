@@ -2,6 +2,7 @@
 #define MAX6675_H
 
 #include <stdint.h>
+//#include "spi.h"
 
 /**
  * Initialize MAX6675.
